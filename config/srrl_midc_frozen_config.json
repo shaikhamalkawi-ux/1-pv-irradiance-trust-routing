@@ -1,0 +1,69 @@
+{
+  "protocol_id": "SRRL_MIDC_EXTERNAL_TRANSFER_FROZEN_v1",
+  "dataset": {
+    "site": "BMS",
+    "doi": "10.7799/1052221",
+    "main_start": "2021-01-01",
+    "main_end": "2023-12-31",
+    "fit_start": "2021-01-01",
+    "fit_end": "2021-12-31",
+    "calibration_start": "2022-01-01",
+    "calibration_end": "2022-12-31",
+    "test_start": "2023-01-01",
+    "test_end": "2023-12-31",
+    "schema_probe_start": "2021-06-21",
+    "schema_probe_end": "2021-06-22"
+  },
+  "instrument_lock": {
+    "primary_model": "CMP22",
+    "primary_measurement": "Global Horizontal Kipp & Zonen (Primary)",
+    "primary_serial": "140043",
+    "secondary_model": "CMP22",
+    "secondary_measurement": "Global Horizontal Kipp & Zonen (Secondary)",
+    "secondary_serial": "100174",
+    "serial_change_excluded_after": "2024-04-23"
+  },
+  "aggregation": {
+    "native_minutes_expected": 1,
+    "stage1_minutes": 10,
+    "stage1_min_native": 5,
+    "stage2_minutes": 30,
+    "stage2_min_stage1": 2,
+    "solar_elevation_min_deg": 10.0
+  },
+  "feature_scales_wm2": {
+    "ghi": 50.0,
+    "dynamic": 25.0,
+    "stuck_range": 12.5
+  },
+  "membership": {
+    "monthly_onset_quantile": 0.75,
+    "monthly_full_quantile": 0.975,
+    "across_month_lower_quantile": 0.10,
+    "across_month_upper_quantile": 0.90,
+    "min_fit_months": 10,
+    "min_fit_month_daylight_records": 500
+  },
+  "alert_quantile": 0.95,
+  "irradiance_bins_wm2": [50, 200, 500, 800, 1000000],
+  "min_common_support_calibration": 5000,
+  "min_common_support_test": 5000,
+  "column_semantics": {
+    "primary_ghi_required_terms": ["Global", "CMP22", "Primary"],
+    "secondary_ghi_required_terms": ["Global", "CMP22", "Secondary"],
+    "closure_optional": true
+  },
+  "rule_consequents": {
+    "all_low": 0.95,
+    "pair_high": 0.25,
+    "closure_high": 0.32,
+    "dynamic_high": 0.48,
+    "stuck_high": 0.22,
+    "pair_closure": 0.05,
+    "pair_dynamic": 0.12,
+    "closure_stuck": 0.10,
+    "pair_stuck": 0.08,
+    "fewer_than_two_features": 0.50,
+    "missing_sensor": 0.00
+  }
+}
