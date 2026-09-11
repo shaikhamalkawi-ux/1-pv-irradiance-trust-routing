@@ -349,8 +349,10 @@ def main():
     labels=['50-200','200-500','500-800','>800']
     agg['irr_bin']=pd.cut(agg['pair_mean'],bins=bins,labels=labels,right=False)
 
-    theoretical=agg.loc[agg['split'].eq('fit') & agg['daylight']].groupby(agg.index.month).size()
-    admitted=agg.loc[agg['split'].eq('fit') & agg['daylight'] & agg['common_pair']].groupby(agg.index.month).size()
+    fit_day_mask=agg['split'].eq('fit') & agg['daylight']
+    fit_admit_mask=fit_day_mask & agg['common_pair']
+    theoretical=agg.loc[fit_day_mask].groupby(agg.loc[fit_day_mask].index.month).size()
+    admitted=agg.loc[fit_admit_mask].groupby(agg.loc[fit_admit_mask].index.month).size()
     coverage=pd.DataFrame({'theoretical_daylight_slots':theoretical,'common_pair_records':admitted}).fillna(0)
     coverage['coverage_fraction']=coverage['common_pair_records']/coverage['theoretical_daylight_slots']
     coverage.index.name='month'
