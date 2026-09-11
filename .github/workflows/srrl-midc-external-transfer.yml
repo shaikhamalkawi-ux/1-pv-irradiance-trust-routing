@@ -1,0 +1,57 @@
+name: SRRL MIDC external trust transfer
+
+on:
+  push:
+    paths:
+      - 'protocols/SRRL_MIDC_EXTERNAL_TRANSFER_FROZEN_v1.md'
+      - 'protocols/SRRL_MIDC_PRE_OUTCOME_SCHEMA_AMENDMENT_20260911.md'
+      - 'protocols/SRRL_MIDC_PRE_OUTCOME_ANALYSIS_LOCK_20260911.md'
+      - 'protocols/SRRL_MIDC_PRE_OUTCOME_FEASIBILITY_CORRECTION_20260911.md'
+      - 'config/srrl_midc_frozen_config.json'
+      - 'analysis/run_srrl_midc_transfer.py'
+      - 'requirements.txt'
+      - '.github/workflows/srrl-midc-external-transfer.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  external-transfer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install frozen dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run frozen SRRL transfer analysis
+        run: |
+          set -o pipefail
+          mkdir -p results/srrl_midc_transfer
+          python analysis/run_srrl_midc_transfer.py 2>&1 | tee results/srrl_midc_transfer/run_stdout.log
+      - name: Lock environment and source hashes
+        if: always()
+        run: |
+          mkdir -p results/srrl_midc_transfer
+          pip freeze > results/srrl_midc_transfer/pip_freeze.txt
+          sha256sum \
+            protocols/SRRL_MIDC_EXTERNAL_TRANSFER_FROZEN_v1.md \
+            protocols/SRRL_MIDC_PRE_OUTCOME_SCHEMA_AMENDMENT_20260911.md \
+            protocols/SRRL_MIDC_PRE_OUTCOME_ANALYSIS_LOCK_20260911.md \
+            protocols/SRRL_MIDC_PRE_OUTCOME_FEASIBILITY_CORRECTION_20260911.md \
+            config/srrl_midc_frozen_config.json \
+            analysis/run_srrl_midc_transfer.py \
+            requirements.txt \
+            > results/srrl_midc_transfer/source_sha256.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: srrl-midc-external-transfer-results
+          path: results/srrl_midc_transfer
+          if-no-files-found: error
+          retention-days: 30
