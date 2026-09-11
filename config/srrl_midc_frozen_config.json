@@ -1,8 +1,13 @@
 {
   "protocol_id": "SRRL_MIDC_EXTERNAL_TRANSFER_FROZEN_v1",
+  "schema_amendment": "SRRL_MIDC_PRE_OUTCOME_SCHEMA_AMENDMENT_20260911",
   "dataset": {
     "site": "BMS",
     "doi": "10.7799/1052221",
+    "latitude": 39.7423,
+    "longitude": -105.1785,
+    "altitude_m": 1828.8,
+    "timezone": "MST",
     "main_start": "2021-01-01",
     "main_end": "2023-12-31",
     "fit_start": "2021-01-01",
@@ -18,9 +23,13 @@
     "primary_model": "CMP22",
     "primary_measurement": "Global Horizontal Kipp & Zonen (Primary)",
     "primary_serial": "140043",
+    "primary_column": "Global CMP22-1 (cor) [W/m^2]",
     "secondary_model": "CMP22",
     "secondary_measurement": "Global Horizontal Kipp & Zonen (Secondary)",
     "secondary_serial": "100174",
+    "secondary_column": "Global CMP22-2 (cor) [W/m^2]",
+    "dhi_column": "Diffuse CM22-1 (vent/cor) [W/m^2]",
+    "dni_column": "Direct CHP1-1 [W/m^2]",
     "serial_change_excluded_after": "2024-04-23"
   },
   "aggregation": {
@@ -46,12 +55,14 @@
   },
   "alert_quantile": 0.95,
   "irradiance_bins_wm2": [50, 200, 500, 800, 1000000],
+  "irradiance_bin_source": "pair_mean",
+  "seasons": {"DJF": [12,1,2], "MAM": [3,4,5], "JJA": [6,7,8], "SON": [9,10,11]},
   "min_common_support_calibration": 5000,
   "min_common_support_test": 5000,
-  "column_semantics": {
-    "primary_ghi_required_terms": ["Global", "CMP22", "Primary"],
-    "secondary_ghi_required_terms": ["Global", "CMP22", "Secondary"],
-    "closure_optional": true
+  "rule_engine": {
+    "label": "disclosed-rule reconstruction sensitivity",
+    "and_tnorm": "minimum",
+    "type_reduction": "Karnik-Mendel singleton consequent endpoints"
   },
   "rule_consequents": {
     "all_low": 0.95,
