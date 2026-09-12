@@ -1,0 +1,35 @@
+name: SRRL Native Closure Audit
+
+on:
+  push:
+    paths:
+      - 'analysis/audit_srrl_native_closure.py'
+      - '.github/workflows/srrl-native-closure-audit.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run native-first closure audit
+        run: python analysis/audit_srrl_native_closure.py
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: srrl-native-closure-audit
+          path: results/srrl_native_closure_audit/
+          if-no-files-found: error
+          retention-days: 30
