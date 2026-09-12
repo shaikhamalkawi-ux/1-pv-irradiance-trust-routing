@@ -1,0 +1,31 @@
+name: SRRL Closure Order Audit
+
+on:
+  push:
+    paths:
+      - 'analysis/audit_srrl_closure_order.py'
+      - '.github/workflows/srrl-closure-order-audit.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run closure-order audit
+        run: python analysis/audit_srrl_closure_order.py
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: srrl-closure-order-audit-results
+          path: results/srrl_closure_order_audit/
+          if-no-files-found: error
+          retention-days: 30
