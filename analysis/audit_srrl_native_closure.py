@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 from pathlib import Path
 
@@ -7,9 +8,14 @@ import numpy as np
 import pandas as pd
 import pvlib
 
-import analysis.run_srrl_midc_transfer as base
-
 ROOT = Path(__file__).resolve().parents[1]
+BASE_PATH = ROOT / 'analysis' / 'run_srrl_midc_transfer.py'
+spec = importlib.util.spec_from_file_location('run_srrl_midc_transfer', BASE_PATH)
+if spec is None or spec.loader is None:
+    raise RuntimeError(f'Cannot load baseline module from {BASE_PATH}')
+base = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(base)
+
 CFG = json.loads((ROOT / 'config' / 'srrl_midc_frozen_config.json').read_text())
 OUT = ROOT / 'results' / 'srrl_native_closure_audit'
 OUT.mkdir(parents=True, exist_ok=True)
@@ -38,7 +44,6 @@ def aggregate_common_native_residual(native: pd.DataFrame, target: str, cfg: dic
     residual = (x - e).abs() / np.maximum((x.abs() + e.abs()) / 2.0, s)
     residual.name = 'closure_native_first'
 
-    # Mirror the locked two-stage completeness thresholds, but on common support.
     r10 = residual.resample('10min').median()
     c10 = residual.resample('10min').count()
     r10 = r10.where(c10 >= int(cfg['aggregation']['stage1_min_native']))
@@ -103,7 +108,6 @@ def main():
     }
     native = native.rename(columns=rename)
 
-    # Locked aggregate-first representation.
     agg = base.aggregate_with_completeness(native, ['primary', 'secondary', 'dhi', 'dni'])
     sol = pvlib.solarposition.get_solarposition(
         agg.index, ds['latitude'], ds['longitude'], ds['altitude_m']
