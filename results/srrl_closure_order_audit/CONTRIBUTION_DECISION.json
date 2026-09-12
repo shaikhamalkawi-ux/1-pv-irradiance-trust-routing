@@ -1,0 +1,13 @@
+{
+  "audit_scope": "Post-baseline implementation audit; does not alter AC4 unless a material result change is verified.",
+  "source_period": ["2021-01-01", "2023-12-31"],
+  "native_rows": 1576800,
+  "aggregated_rows": 52560,
+  "baseline_center_rates": {"primary": 0.048056155507559394, "secondary": 0.048191144708423325},
+  "native_first_center_rates": {"primary": 0.04967602591792657, "secondary": 0.04778617710583153},
+  "absolute_center_rate_changes": {"primary": 0.0016198704103671732, "secondary": 0.00040496760259179504},
+  "materiality_rule": "Flag for manuscript correction if closure-order choice changes the qualitative external-boundary conclusion or changes either sensor center-alert rate by >=1 percentage point absolute.",
+  "baseline_sensor_gap": 0.00013498920086393168,
+  "native_first_sensor_gap": 0.0018898488120950366,
+  "materiality_flag": false
+}
